@@ -4,19 +4,24 @@ A distributed Tic-Tac-Toe game demonstrating Remote Method Invocation (RMI) arch
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Use Cases](#use-cases)
-- [RMI Components](#rmi-components)
-- [Game Flow](#game-flow)
-- [Design Patterns](#design-patterns)
-- [Limitations](#limitations)
-- [Future Enhancements](#future-enhancements)
+- [Overview](#-overview)
+- [Installation](#-installation)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Project Structure](#-project-structure)
+- [Requirements](#-requirements)
+- [Usage](#-usage)
+- [Use Cases](#-use-cases)
+- [RMI Components](#-rmi-components)
+- [Game Flow](#-game-flow)
+- [Design Patterns](#-design-patterns)
+- [Limitations](#-limitations)
+- [Future Enhancements](#-future-enhancements)
+- [Performance Considerations](#-performance-considerations)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Authors](#-authors)
+- [Acknowledgments](#-acknowledgments)
 
 ## 🎯 Overview
 
@@ -29,6 +34,28 @@ This project implements a **Tic-Tac-Toe game** using **RMI (Remote Method Invoca
 - **Service** contains the actual game logic
 
 The system supports both **single-player** (vs AI) and **two-player** (local multiplayer) modes.
+
+## 🚀 Installation
+
+### Option 1: Using Command Line
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd RMI-Tic-Tac-Toe-V1
+
+# 2. Compile all Java files
+javac -d bin src/**/*.java
+or
+javac -d bin src\registry\*.java src\client\*.java src\server\*.java src\ui\*.java
+
+
+# 3. Run single-player mode
+java -cp bin ui.GameUI
+
+# 4. Or run two-player mode
+java -cp bin ui.TwoGameUI
+```
 
 ## ✨ Features
 
@@ -172,28 +199,6 @@ RMI-Tic-Tac-Toe-V1/
 - **IDE**: IntelliJ IDEA, Eclipse, or VS Code
 - **Build Tool**: Maven or Gradle (optional)
 - **Version Control**: Git
-
-## 🚀 Installation
-
-### Option 1: Using Command Line
-
-```bash
-# 1. Clone the repository
-git clone <repository-url>
-cd RMI-Tic-Tac-Toe-V1
-
-# 2. Compile all Java files
-javac -d bin src/**/*.java
-or
-javac -d bin src\registry\*.java src\client\*.java src\server\*.java src\ui\*.java
-
-
-# 3. Run single-player mode
-java -cp bin ui.GameUI
-
-# 4. Or run two-player mode
-java -cp bin ui.TwoGameUI
-```
 
 ### Option 2: Using IDE (IntelliJ IDEA)
 
@@ -690,22 +695,14 @@ This project is created for educational purposes as part of a Distributed System
 
 ## 👥 Authors
 
-- **Your Name** - Initial work - TP-I4 2025
+- **SOK KIMHENG** - Initial work - TP-I4 2025
 
 ## 🙏 Acknowledgments
 
-- Distributed Systems Course - TP-I4 2025
+- Distributed Systems Course - DS-I4 2025
 - Java Swing Documentation
 - RMI Architecture Patterns
 - Design Patterns: Elements of Reusable Object-Oriented Software
-
-## 📞 Support
-
-For questions or issues:
-- Create an issue in the repository
-- Contact: [your-email@example.com]
-- Course forum: [link]
-
 ---
 
 **Note**: This is a prototype implementation designed to demonstrate RMI architectural patterns. For production use, implement true Java RMI with network communication and proper security measures.

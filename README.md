@@ -5,7 +5,7 @@ A distributed Tic-Tac-Toe game demonstrating Remote Method Invocation (RMI) arch
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
-- [Installation](#-installation)
+- [Installation and Run](#-installation-and-run)
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [Project Structure](#-project-structure)
@@ -35,7 +35,7 @@ This project implements a **Tic-Tac-Toe game** using **RMI (Remote Method Invoca
 
 The system supports both **single-player** (vs AI) and **two-player** (local multiplayer) modes.
 
-## 🚀 Installation
+## 🚀 Installation and Run
 
 ### Option 1: Using Command Line
 

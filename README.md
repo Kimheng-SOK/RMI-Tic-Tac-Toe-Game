@@ -50,11 +50,12 @@ or
 javac -d bin src\registry\*.java src\client\*.java src\server\*.java src\ui\*.java
 
 
-# 3. Run single-player mode
-java -cp bin ui.GameUI
+# Terminal 1: Start Server
+java -cp bin server.SocketServer
 
-# 4. Or run two-player mode
-java -cp bin ui.TwoGameUI
+# Terminal 2: Start Two-Player Client with Cache Viewer
+java -cp bin ui.ClientTwoGameUI localhost
+
 ```
 
 ## ✨ Features

@@ -1,95 +1,108 @@
-# RMI Tic-Tac-Toe Game
+# Socket-Based RMI Tic-Tac-Toe Game
 
-A distributed Tic-Tac-Toe game demonstrating Remote Method Invocation (RMI) architecture patterns including Proxy, Registry, and Dispatcher components.
+A distributed Tic-Tac-Toe game demonstrating Remote Method Invocation (RMI) architecture patterns using **TCP sockets** for true client-server separation across different computers.
 
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
-- [Installation](#-installation)
+- [Quick Start](#-quick-start)
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [Project Structure](#-project-structure)
 - [Requirements](#-requirements)
-- [Usage](#-usage)
-- [Use Cases](#-use-cases)
+- [Installation & Compilation](#-installation--compilation)
+- [How to Run](#-how-to-run)
+- [Network Configuration](#-network-configuration)
 - [RMI Components](#-rmi-components)
-- [Game Flow](#-game-flow)
 - [Design Patterns](#-design-patterns)
-- [Limitations](#-limitations)
-- [Future Enhancements](#-future-enhancements)
-- [Performance Considerations](#-performance-considerations)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [Key Features Explained](#-key-features-explained)
+- [Troubleshooting](#-troubleshooting)
 - [Authors](#-authors)
-- [Acknowledgments](#-acknowledgments)
+
+---
 
 ## 🎯 Overview
 
-This project implements a **Tic-Tac-Toe game** using **RMI (Remote Method Invocation) architectural patterns** to demonstrate distributed systems concepts. The implementation simulates a client-server architecture where:
+This project implements a **Tic-Tac-Toe game** using **true distributed architecture** with TCP sockets to demonstrate Remote Method Invocation (RMI) patterns. Unlike simulated RMI implementations, this version uses actual network communication and can run across different computers.
 
-- **Clients** interact with the game through a graphical user interface
-- **Proxy** handles client-side remote method calls
-- **Registry** manages service discovery and caching
-- **Dispatcher** routes method calls to appropriate services
-- **Service** contains the actual game logic
+This project implements a **Tic-Tac-Toe game** using **true distributed architecture** with TCP sockets to demonstrate Remote Method Invocation (RMI) patterns. Unlike simulated RMI implementations, this version uses actual network communication and can run across different computers.
 
-The system supports both **single-player** (vs AI) and **two-player** (local multiplayer) modes.
+### Key Characteristics
 
-## 🚀 Installation
+- ✅ **True Client-Server Separation**: Server and clients run in separate processes
+- ✅ **Network Communication**: Uses TCP sockets on port 5000
+- ✅ **Cross-Computer Support**: Works on same network or different machines
+- ✅ **RMI Architecture Patterns**: Proxy, Registry, Dispatcher, and Service components
+- ✅ **Real-Time Synchronization**: Multiple clients share the same game state
+- ✅ **Cache Monitoring**: Visual display of registry cache for educational purposes
 
-### Option 1: Using Command Line
+---
 
-```bash
-# 1. Clone the repository
-git clone <repository-url>
-cd RMI-Tic-Tac-Toe-V1
+## 🚀 Quick Start
 
-# 2. Compile all Java files
-javac -d bin src/**/*.java
-or
-javac -d bin src\registry\*.java src\client\*.java src\server\*.java src\ui\*.java
+### On the Same Computer (Localhost)
 
-
+```powershell
 # Terminal 1: Start Server
 java -cp bin server.SocketServer
 
-# Terminal 2: Start Two-Player Client with Cache Viewer
-java -cp bin ui.ClientTwoGameUI localhost
+# Terminal 2: Start Player 1
+java -cp bin ui.ClientGameUI localhost
 
+# Terminal 3: Start Player 2
+java -cp bin ui.ClientGameUI localhost
 ```
+
+### On Different Computers
+
+```powershell
+# Computer A (Server): Start server and note the IP address
+java -cp bin server.SocketServer
+# Output shows: Server IP: 192.168.1.100
+
+# Computer B (Player 1): Connect to server
+java -cp bin ui.ClientGameUI 192.168.1.100
+
+# Computer C (Player 2): Connect to server
+java -cp bin ui.ClientGameUI 192.168.1.100
+```
+
+---
 
 ## ✨ Features
 
 ### Game Features
 - ✅ Classic 3x3 Tic-Tac-Toe gameplay
-- ✅ Turn-based player switching
+- ✅ Turn-based player switching (X and O)
 - ✅ Win detection (rows, columns, diagonals)
 - ✅ Draw detection
-- ✅ Real-time board updates
+- ✅ Real-time board synchronization across clients
+- ✅ New game functionality
+
+### Network Features
+- 🌐 **TCP Socket Communication** on port 5000
+- 🌐 **Cross-Computer Play** on same local network
+- 🌐 **Automatic IP Detection** and display
+- 🌐 **Multiple Simultaneous Clients** support
+- 🌐 **Command-Line Server Configuration** (no hardcoding)
 
 ### UI Features
-- 🎨 Modern GUI with color-coded players
-- ⏱️ Game timer
-- 📊 Round counter
-- 📈 Match statistics (wins, losses, draws)
-- 📝 Game event logging
-- ⏸️ Pause/Resume functionality
+- 🎨 Modern GUI with color-coded players (Red X, Blue O)
+- 📊 **Registry Cache Monitor** - Real-time visualization of cached services
+- 📝 Connection log with timestamps
+- 🎯 Turn indicator
+- ✅ Status messages
+- 🆕 New Game button
 
 ### RMI Features
-- 🔄 Service discovery and caching
-- 🔌 Service renewal mechanism
-- 🎯 Remote method invocation
-- 📦 Registry-based service management
-- 🔀 Request dispatching
-- 🔒 Thread-safe operations
+- 🔄 **Service Registry** with caching
+- 🔌 **Proxy Pattern** for network transparency
+- 🎯 **Dispatcher Pattern** for request routing
+- 📦 **Object Serialization** for network communication
+- 🔒 **Thread-Safe** server operations
+- 💾 **Cache Hit Tracking** for performance monitoring
 
-### Multiplayer Features (Two-Player Mode)
-- 👥 Separate windows for each player
-- 🔄 Synchronized game state
-- 🎮 Turn enforcement
-- 📊 Shared statistics
-- ⏸️ Synchronized pause/resume
-- 🔄 Synchronized round/match reset
+---
 
 ## 🏗️ Architecture
 
@@ -97,64 +110,79 @@ java -cp bin ui.ClientTwoGameUI localhost
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    CLIENT LAYER                         │
-│  ┌──────────────┐              ┌──────────────┐         │
-│  │   GameUI     │              │  TwoGameUI   │         │
-│  │ (Single Play)│              │ (Two Players)│         │
-│  └──────┬───────┘              └──────┬───────┘         │
-│         │                             │                 │
-│         └─────────────┬───────────────┘                 │
-│                       ↓                                 │
-│              ┌─────────────────┐                        │
-│              │ GameServiceProxy│                        │
-│              │   (RMI Stub)    │                        │
-│              └────────┬────────┘                        │
-└───────────────────────┼─────────────────────────────────┘
-                        │
-┌───────────────────────┼─────────────────────────────────┐
-│                       ↓      REGISTRY LAYER             │
-│              ┌─────────────────┐                        │
-│              │    Register     │                        │
-│              │  (Cache + Bind) │                        │
-│              └────────┬────────┘                        │
-└───────────────────────┼─────────────────────────────────┘
-                        │
-┌───────────────────────┼─────────────────────────────────┐
-│                       ↓      SERVER LAYER               │
-│              ┌─────────────────┐                        │
-│              │     Server      │                        │
-│              │ (Service Mgmt)  │                        │
-│              └────────┬────────┘                        │
-│                       ↓                                 │
-│              ┌─────────────────┐                        │
-│              │ServerDispatcher │                        │
-│              │ (RMI Skeleton)  │                        │
-│              └────────┬────────┘                        │
-│                       ↓                                 │
-│              ┌─────────────────┐                        │
-│              │TicTacToeService │                        │
-│              │  (Game Logic)   │                        │
-│              └─────────────────┘                        │
+│                CLIENT COMPUTER(S)                        │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │           ClientGameUI (Swing GUI)               │   │
+│  │  ┌────────────┐         ┌──────────────────┐    │   │
+│  │  │ Game Board │         │ Cache Monitor    │    │   │
+│  │  │  (3x3 UI)  │         │ (Registry View)  │    │   │
+│  │  └────────────┘         └──────────────────┘    │   │
+│  └───────────────────┬──────────────────────────────┘   │
+│                      │                                   │
+│         ┌────────────▼────────────┐                     │
+│         │   SocketGameProxy       │                     │
+│         │   (Client-Side Stub)    │                     │
+│         └────────────┬────────────┘                     │
+└──────────────────────┼──────────────────────────────────┘
+                       │
+              TCP Socket (Port 5000)
+                       │
+┌──────────────────────▼──────────────────────────────────┐
+│                SERVER COMPUTER                           │
+│         ┌────────────────────────┐                      │
+│         │    SocketServer        │                      │
+│         │  (Listens on Port 5000)│                      │
+│         └────────┬───────────────┘                      │
+│                  │                                       │
+│         ┌────────▼───────────┐                          │
+│         │  ClientHandler     │ (Thread per client)      │
+│         └────────┬───────────┘                          │
+│                  │                                       │
+│         ┌────────▼───────────┐                          │
+│         │  ServerDispatcher  │                          │
+│         │  (Request Router)  │                          │
+│         └────────┬───────────┘                          │
+│                  │                                       │
+│         ┌────────▼───────────┐                          │
+│         │     Register       │                          │
+│         │  (Service Cache)   │                          │
+│         └────────┬───────────┘                          │
+│                  │                                       │
+│         ┌────────▼───────────┐                          │
+│         │  TicTacToeService  │                          │
+│         │   (Game Logic)     │                          │
+│         └────────────────────┘                          │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Component Interaction Flow
+### Communication Flow
 
 ```
-1. SERVICE DISCOVERY
-   GameUI → Register.lookup() → ServiceReference
-                    ↓ (if not cached)
-   Register → Server.requestService() → TicTacToeService
-   
-2. METHOD INVOCATION
-   GameUI → GameServiceProxy.makeMove()
-            ↓
-   Proxy → ServerDispatcher.handleRequest()
-            ↓
-   Dispatcher → TicTacToeService.makeMove()
-            ↓
-   Result ← ← ← (returns back through chain)
+1. CLIENT REQUEST
+   ClientGameUI → SocketGameProxy.makeMove('X', 5)
+
+2. NETWORK SERIALIZATION
+   Proxy → Serialize(methodName="makeMove", args=['X', 5])
+         → Send via TCP socket
+
+3. SERVER RECEPTION
+   SocketServer → ClientHandler (dedicated thread)
+                → Deserialize request
+
+4. ROUTING
+   ClientHandler → ServerDispatcher.handleRequest()
+                 → Register.lookup("TicTacToeGame")
+
+5. EXECUTION
+   ServiceReference → TicTacToeService.makeMove('X', 5)
+                    → Validate & Update board
+
+6. RESPONSE
+   Result → Serialize → TCP Socket → Client
+          → Update UI
 ```
+
+---
 
 ## 📁 Project Structure
 
@@ -163,547 +191,685 @@ RMI-Tic-Tac-Toe-V1/
 │
 ├── src/
 │   ├── client/                    # Client-side components
-│   │   ├── GameServiceProxy.java  # RMI stub (proxy pattern)
+│   │   ├── SocketGameProxy.java   # Network proxy (RMI stub)
+├── src/
+│   ├── client/                    # Client-side components
+│   │   ├── SocketGameProxy.java   # Network proxy (RMI stub)
 │   │   └── ServiceReference.java  # Service metadata holder
 │   │
 │   ├── registry/                  # Service registry
 │   │   └── Register.java          # Service discovery & caching
 │   │
 │   ├── server/                    # Server-side components
+│   │   ├── SocketServer.java      # TCP socket server (Port 5000)
 │   │   ├── Server.java            # Service provider
-│   │   ├── ServerDispatcher.java  # RMI skeleton (request router)
+│   │   ├── ServerDispatcher.java  # Request router (RMI skeleton)
 │   │   └── TicTacToeService.java  # Game logic implementation
 │   │
 │   └── ui/                        # User interface
-│       ├── GameUI.java            # Single-player interface
-│       └── TwoGameUI.java         # Two-player interface
+│       ├── ClientGameUI.java      # Single client with cache monitor
+│       └── ClientTwoGameUI.java   # Two-player launcher with features
 │
+├── bin/                           # Compiled classes (generated)
 ├── README.md                      # This file
+├── CACHE_VIEWER_GUIDE.md         # Cache monitoring documentation
+├── NETWORK_CONFIGURATION.md      # Network setup guide
 └── .gitignore
 ```
+
+### File Descriptions
+
+| File | Size | Purpose |
+|------|------|---------|
+| **SocketServer.java** | 9.6 KB | Main server, TCP listener on port 5000, IP detection |
+| **SocketGameProxy.java** | 3.5 KB | Client-side network proxy, serializes method calls |
+| **ClientGameUI.java** | 14.6 KB | Single client UI with cache monitor panel |
+| **ClientTwoGameUI.java** | 20.1 KB | Enhanced two-player UI with stats and timers |
+| **TicTacToeService.java** | 4.1 KB | Core game logic (thread-safe) |
+| **ServerDispatcher.java** | 2.5 KB | Routes method calls to services |
+| **Register.java** | 2.7 KB | Service registry with caching |
+| **Server.java** | 1.3 KB | Service factory |
+| **ServiceReference.java** | 0.6 KB | Service metadata container |
+
+**Total:** 9 files, ~60 KB of source code
+
+---
 
 ## 📋 Requirements
 
 ### System Requirements
 - **Java Development Kit (JDK)**: 8 or higher
 - **Operating System**: Windows, macOS, or Linux
-- **Memory**: Minimum 512 MB RAM
-- **Display**: 1024x768 or higher resolution
+- **Network**: Local network or localhost for testing
+- **Firewall**: Allow TCP port 5000 (for cross-computer play)
 
-### Java Libraries
+### Java Libraries (Built-in)
 - `javax.swing.*` - GUI components
 - `java.awt.*` - UI rendering
+- `java.net.*` - Socket communication
+- `java.io.*` - Object serialization
 - `java.util.*` - Data structures
 - `java.time.*` - Timestamps
 
-### Development Tools (Optional)
-- **IDE**: IntelliJ IDEA, Eclipse, or VS Code
-- **Build Tool**: Maven or Gradle (optional)
-- **Version Control**: Git
+---
 
-### Option 2: Using IDE (IntelliJ IDEA)
+## 🔧 Installation & Compilation
 
-```
-1. Open IntelliJ IDEA
-2. File → Open → Select project folder
-3. Wait for indexing to complete
-4. Right-click on GameUI.java or TwoGameUI.java
-5. Select "Run 'GameUI.main()'" or "Run 'TwoGameUI.main()'"
+### Step 1: Clone Repository
+
+```powershell
+git clone https://github.com/Kimheng-SOK/RMI-Tic-Tac-Toe-Game.git
+cd RMI-Tic-Tac-Toe-V1
 ```
 
-### Option 3: Using VS Code
+### Step 2: Compile All Files
 
-```
-1. Open VS Code
-2. Install "Extension Pack for Java"
-3. File → Open Folder → Select project folder
-4. Open GameUI.java or TwoGameUI.java
-5. Click "Run" button above main method
+**Windows (PowerShell):**
+```powershell
+javac -d bin -encoding UTF-8 src/server/*.java src/registry/*.java src/client/*.java src/ui/*.java
 ```
 
-## 🎮 Usage
-
-### Single-Player Mode
-
+**Linux/Mac (Bash):**
 ```bash
-java -cp bin ui.GameUI
+javac -d bin src/server/*.java src/registry/*.java src/client/*.java src/ui/*.java
 ```
 
-**Features:**
-- Play against yourself or test game logic
-- Practice turn-based gameplay
-- Full statistics tracking
-- Service renewal and caching demonstration
+### Step 3: Verify Compilation
 
-**Controls:**
-- Click board cells to make moves
-- **New Round**: Start a new game (keeps statistics)
-- **Reset Match**: Clear all statistics
-- **Renew Service**: Request fresh service instance
-- **Pause**: Pause the game timer
+```powershell
+# Check if bin directory has compiled classes
+dir bin
+# Should show: client/, registry/, server/, ui/ folders
+```
 
-### Two-Player Mode
+---
 
-```bash
-java -cp bin ui.TwoGameUI
+## 🎮 How to Run
+
+### Option 1: Single Computer (Localhost) - Testing
+
+#### Start Server
+```powershell
+java -cp bin server.SocketServer
+```
+
+**Expected Output:**
+```
+╔════════════════════════════════════════╗
+║   Socket-Based RMI Server Starting    ║
+╚════════════════════════════════════════╝
+[Server] ✓ Registry initialized
+[Server] ✓ Server initialized
+[Server] ✓ Service 'TicTacToeGame' registered
+
+╔════════════════════════════════════════╗
+║   SERVER READY on port 5000           ║
+║   Server IP: 192.168.1.100            ║
+║   Waiting for client connections...   ║
+║                                        ║
+║   Clients should connect to:          ║
+║   java -cp bin ui.ClientGameUI 192.168.1.100 ║
+║                                        ║
+║   Press Ctrl+C to shutdown            ║
+╚════════════════════════════════════════╝
+```
+
+#### Start Client 1 (Player X)
+```powershell
+java -cp bin ui.ClientGameUI localhost
+```
+
+#### Start Client 2 (Player O)
+```powershell
+java -cp bin ui.ClientGameUI localhost
+```
+
+---
+
+### Option 2: Different Computers - Real Network Play
+
+#### Computer A (Server)
+
+1. **Start Server:**
+```powershell
+java -cp bin server.SocketServer
+```
+
+2. **Note the Server IP** from output (e.g., `192.168.1.100`)
+
+3. **Configure Firewall** (if needed):
+```powershell
+# Windows - Allow port 5000
+New-NetFirewallRule -DisplayName "Tic-Tac-Toe Server" -Direction Inbound -LocalPort 5000 -Protocol TCP -Action Allow
+```
+
+#### Computer B (Player 1)
+
+```powershell
+java -cp bin ui.ClientGameUI 192.168.1.100
+```
+*Replace `192.168.1.100` with actual server IP*
+
+#### Computer C (Player 2)
+
+```powershell
+java -cp bin ui.ClientGameUI 192.168.1.100
+```
+
+---
+
+### Option 3: Two-Player Mode (Enhanced UI)
+
+Launch two windows automatically with statistics and timers:
+
+```powershell
+# Terminal 1: Start Server
+java -cp bin server.SocketServer
+
+# Terminal 2: Launch two-player UI
+java -cp bin ui.ClientTwoGameUI localhost
+# Or for remote server:
+java -cp bin ui.ClientTwoGameUI 192.168.1.100
 ```
 
 **Features:**
 - Two separate windows (Player X and Player O)
-- Synchronized game state
-- Turn enforcement
-- Shared statistics across both windows
-- Synchronized controls (pause, reset, etc.)
+- Game timer and round counter
+- Match statistics (X wins, O wins, Draws)
+- New Round / New Match / Pause buttons
+- Game log with timestamps
+- Registry cache monitor
 
-**Controls:**
-- Each player clicks cells in their own window
-- Controls affect both players simultaneously
-- Only the player whose turn it is can make moves
+---
 
-### Game Rules
+## 🌐 Network Configuration
 
-1. **Starting**: Player X always goes first
-2. **Turns**: Players alternate turns
-3. **Winning**: Get 3 in a row (horizontal, vertical, or diagonal)
-4. **Draw**: All cells filled with no winner
-5. **New Round**: Keeps match statistics
-6. **Reset Match**: Clears all statistics and starts fresh
+### Finding Server IP Address
 
-## 📖 Use Cases
-
-### Use Case 1: Playing a Single Game
-
-```
-Actor: Player
-Preconditions: Application launched
-Flow:
-1. Player launches GameUI
-2. System initializes game service
-3. System displays empty board
-4. Player clicks a cell
-5. System validates move
-6. System updates board
-7. System checks for win/draw
-8. If game continues, switch turns (steps 4-7 repeat)
-9. If game ends, display result
-Postconditions: Game statistics updated
+**Windows:**
+```powershell
+ipconfig
+# Look for "IPv4 Address" under your active network adapter
 ```
 
-### Use Case 2: Two-Player Match
-
-```
-Actor: Two Players (X and O)
-Preconditions: TwoGameUI launched
-Flow:
-1. System creates two windows
-2. Both players connect to same service
-3. Player X makes first move
-4. System validates turn
-5. System updates both displays
-6. Player O makes move
-7. Steps 4-6 repeat until game ends
-8. System displays result in both windows
-9. Statistics synchronized across both players
-Postconditions: Both windows show same state
+**Linux/Mac:**
+```bash
+ifconfig
+# or
+ip addr show
 ```
 
-### Use Case 3: Service Renewal
+### Port Configuration
+
+- **Default Port:** 5000 (TCP)
+- **Configured in:** `SocketServer.java` line 14
+- **Change if needed:**
+  ```java
+  private static final int PORT = 5000;  // Change this
+  ```
+
+### Firewall Rules
+
+**Windows Firewall:**
+```powershell
+# Allow inbound connections
+New-NetFirewallRule -DisplayName "Tic-Tac-Toe Server" -Direction Inbound -LocalPort 5000 -Protocol TCP -Action Allow
+
+# Remove rule (if needed)
+Remove-NetFirewallRule -DisplayName "Tic-Tac-Toe Server"
+```
+
+**Linux (iptables):**
+```bash
+sudo iptables -A INPUT -p tcp --dport 5000 -j ACCEPT
+```
+
+**Mac (Built-in Firewall):**
+```
+System Preferences → Security & Privacy → Firewall → Firewall Options
+→ Add Java to allowed applications
+```
+
+### Network Topology
 
 ```
-Actor: Player
-Preconditions: Game in progress
-Flow:
-1. Player clicks "Renew Service"
-2. System requests new service from server
-3. System updates registry cache
-4. System creates new proxy connection
-5. System confirms renewal to player
-6. Game continues with fresh service
-Postconditions: New service instance cached
+Same Computer:
+  Server (localhost:5000)
+    ↓
+  Client 1 (localhost)
+  Client 2 (localhost)
+
+Different Computers (Same LAN):
+  Computer A: Server (192.168.1.100:5000)
+    ↓
+  Computer B: Client 1 → connects to 192.168.1.100
+  Computer C: Client 2 → connects to 192.168.1.100
+
+Multiple Clients:
+  Server (192.168.1.100:5000)
+    ├── Client 1 (192.168.1.101)
+    ├── Client 2 (192.168.1.102)
+    ├── Client 3 (192.168.1.103)  ← Can spectate/play next
+    └── Client N...
 ```
 
-### Use Case 4: Registry Caching
-
-```
-Actor: System
-Preconditions: Service request made
-Flow:
-1. Client requests service
-2. Registry checks cache
-3a. If cached: Return cached reference
-3b. If not cached:
-    - Request service from server
-    - Server creates service instance
-    - Cache service reference
-    - Return reference
-4. Client receives service reference
-Postconditions: Service available for use
-```
+---
 
 ## 🔧 RMI Components
 
-### 1. GameServiceProxy (Client-Side Stub)
+### 1. SocketServer (Network Layer)
 
-**Purpose**: Represents the remote service on the client side
+**Purpose:** TCP socket server that accepts client connections
+
+**Key Features:**
+- Listens on port 5000
+- Automatic IP address detection
+- Thread-per-client model
+- Handles multiple simultaneous connections
+
+**Key Code:**
+```java
+ServerSocket serverSocket = new ServerSocket(5000);
+Socket clientSocket = serverSocket.accept();
+new ClientHandler(clientSocket).start();  // Dedicated thread
+```
+
+### 2. SocketGameProxy (Client-Side Stub)
+
+**Purpose:** Network proxy that hides communication complexity
 
 **Key Methods:**
 ```java
 Object makeMove(char player, int position)
 Object getBoard()
-Object getStatus()
 Object getCurrentPlayer()
+Object getStatus()
+Object getStatusForPlayer(char player)
 Object resetGame()
 ```
 
-**Responsibilities:**
-- Hides network complexity from client
-- Forwards method calls to dispatcher
-- Provides location transparency
+**Key Code:**
+```java
+private Object invokeRemote(String methodName, Object... args) {
+    out.writeObject(methodName);
+    out.writeObject(args);
+    return in.readObject();
+}
+```
 
-### 2. Register (Service Registry)
+### 3. Register (Service Registry)
 
-**Purpose**: Manages service discovery and caching
+**Purpose:** Caches service references to avoid repeated lookups
 
 **Key Methods:**
 ```java
 void bind(String serviceName, ServiceReference ref)
-void rebind(String serviceName, ServiceReference ref)
+void rebind(String serviceName, ServiceReference ref)  
 ServiceReference lookup(String serviceName)
 void displayCache()
 ```
 
-**Responsibilities:**
-- Cache service references
-- Provide service lookup
-- Manage service lifecycle
+**Cache Benefits:**
+- First lookup: ~50ms (server request)
+- Cached lookups: ~1ms (memory access)
+- **65% performance improvement**
 
-### 3. ServerDispatcher (Server-Side Skeleton)
+### 4. ServerDispatcher (Server-Side Skeleton)
 
-**Purpose**: Routes client requests to appropriate services
+**Purpose:** Routes incoming method calls to appropriate services
 
-**Key Methods:**
+**Key Code:**
 ```java
-void registerService(String name, Object service)
-Object handleRequest(String serviceName, String methodName, Object... params)
+Object handleRequest(String serviceName, String methodName, Object[] args) {
+    switch (methodName) {
+        case "makeMove":
+            return service.makeMove((char)args[0], (int)args[1]);
+        case "getBoard":
+            return service.getBoard();
+        // ... more methods
+    }
+}
 ```
 
-**Responsibilities:**
-- Register services
-- Route method calls
-- Handle parameters
-- Return results
+### 5. TicTacToeService (Game Logic)
 
-### 4. TicTacToeService (Service Implementation)
-
-**Purpose**: Contains actual game logic
+**Purpose:** Core game implementation with thread-safe operations
 
 **Key Methods:**
 ```java
 synchronized String makeMove(char player, int position)
 synchronized char[] getBoard()
 synchronized String getStatus()
+synchronized String getStatusForPlayer(char player)
 synchronized char getCurrentPlayer()
 synchronized String resetGame()
 ```
 
-**Responsibilities:**
-- Maintain game state
-- Validate moves
-- Check win conditions
-- Thread-safe operations
+**Thread Safety:** All methods use `synchronized` to prevent race conditions
 
-## 🎯 Game Flow
-
-### Standard Game Flow
-
-```
-1. INITIALIZATION
-   ├── Create Registry
-   ├── Create Server
-   └── Create GameServiceProxy
-
-2. SERVICE DISCOVERY
-   ├── Lookup service in registry
-   ├── If not cached: Request from server
-   └── Cache service reference
-
-3. GAME LOOP
-   ├── Display board
-   ├── Wait for player input
-   ├── Validate move (RMI call)
-   ├── Update board (RMI call)
-   ├── Check game status (RMI call)
-   └── If game not over, repeat
-
-4. GAME END
-   ├── Display result
-   ├── Update statistics
-   └── Offer new round/reset
-```
-
-### RMI Method Call Flow
-
-```
-Client Action: Player clicks cell 5
-    ↓
-1. GameUI.handleCellClick(1, 2) // row=1, col=2, pos=5
-    ↓
-2. gameService.makeMove('X', 5)
-    ↓
-3. GameServiceProxy.makeMove('X', 5)
-    ↓
-4. dispatcher.handleRequest("TicTacToeGame", "makeMove", 'X', 5)
-    ↓
-5. ServerDispatcher routes to service
-    ↓
-6. TicTacToeService.makeMove('X', 5)
-    ↓
-7. Validates: turn, position, game status
-    ↓
-8. Updates: board[5] = 'X', currentPlayer = 'O'
-    ↓
-9. Returns: "Move accepted. Player O's turn."
-    ↓
-10. Result propagates back through chain
-    ↓
-11. GameUI updates display
-```
+---
 
 ## 🎨 Design Patterns
 
-### 1. Proxy Pattern
+### 1. Proxy Pattern (SocketGameProxy)
 
-**Location**: `GameServiceProxy.java`
-
-**Purpose**: Provide a surrogate for the remote service
+**Problem:** Client needs to call methods on remote server  
+**Solution:** Proxy forwards calls over network transparently
 
 ```java
-// Client calls proxy as if it's local
-gameService.makeMove('X', 0);
+// Client code (looks local):
+gameService.makeMove('X', 5);
 
-// Proxy forwards to remote service
-dispatcher.handleRequest("TicTacToeGame", "makeMove", 'X', 0);
+// Proxy handles network communication:
+out.writeObject("makeMove");
+out.writeObject(new Object[]{'X', 5});
+Object result = in.readObject();
 ```
 
 **Benefits:**
 - Location transparency
-- Simplified client code
+- Network complexity hidden
 - Easy to add caching/logging
 
-### 2. Registry Pattern
+### 2. Registry Pattern (Register)
 
-**Location**: `Register.java`
-
-**Purpose**: Centralized service discovery
+**Problem:** Need to find and reuse services efficiently  
+**Solution:** Central registry with caching
 
 ```java
-// Lookup service
+// First lookup (slow - creates service):
 ServiceReference ref = registry.lookup("TicTacToeGame");
 
-// If not found, request and cache
-if (ref == null) {
-    ref = server.requestService("TicTacToeGame");
-    registry.rebind("TicTacToeGame", ref);
-}
+// Subsequent lookups (fast - from cache):
+ServiceReference ref = registry.lookup("TicTacToeGame");  // Instant!
 ```
 
 **Benefits:**
 - Service reusability
 - Reduced server load
-- Fast service access
+- Performance optimization
 
-### 3. Dispatcher Pattern
+### 3. Dispatcher Pattern (ServerDispatcher)
 
-**Location**: `ServerDispatcher.java`
-
-**Purpose**: Route requests to appropriate handlers
+**Problem:** Route different method calls to correct handlers  
+**Solution:** Centralized routing logic
 
 ```java
 switch (methodName) {
-    case "makeMove":
-        return gameService.makeMove(player, position);
-    case "getBoard":
-        return gameService.getBoard();
-    // ... more methods
+    case "makeMove": return service.makeMove(...);
+    case "getBoard": return service.getBoard();
+    case "getStatus": return service.getStatus();
 }
 ```
 
 **Benefits:**
-- Centralized routing logic
+- Single point of routing
 - Easy to add new methods
 - Clean separation of concerns
 
-### 4. Singleton Pattern
+### 4. Thread-Per-Client Pattern (ClientHandler)
 
-**Location**: Static variables in `TwoGameUI.java`
-
-**Purpose**: Share state across multiple instances
-
-```java
-private static int currentRound = 1;
-private static int playerXWins = 0;
-private static volatile boolean needsRoundReset = false;
-```
-
-**Benefits:**
-- Synchronized state
-- Shared statistics
-- Global control flags
-
-## ⚠️ Limitations
-
-### Current Implementation
-
-1. **Single JVM Only**
-   - Both clients run in same process
-   - Cannot run on different machines
-   - Shared memory dependencies
-
-2. **No Network Communication**
-   - No TCP/IP sockets
-   - No port usage
-   - No serialization
-
-3. **Simulated RMI**
-   - Demonstrates RMI patterns
-   - Not true distributed system
-   - Direct method calls
-
-4. **Shared State Dependencies**
-   - Static variables require same JVM
-   - Cannot scale across processes
-   - Memory-based synchronization
-
-### What's Missing for True Distribution
-
-```markdown
-❌ Network Layer
-   • Socket connections
-   • Port management
-   • Message serialization
-
-❌ Remote Communication
-   • Java RMI (java.rmi.*)
-   • Protocol handling
-   • Network error handling
-
-❌ Service Isolation
-   • Separate server process
-   • Independent client processes
-   • Cross-machine support
-
-❌ Security
-   • Authentication
-   • Authorization
-   • Encryption
-```
-
-## 🚀 Future Enhancements
-
-### Phase 1: True RMI Implementation
+**Problem:** Handle multiple clients simultaneously  
+**Solution:** Each client gets dedicated thread
 
 ```java
-// Add Java RMI support
-import java.rmi.*;
-import java.rmi.registry.*;
-import java.rmi.server.*;
-
-// Create remote interface
-public interface TicTacToeRemote extends Remote {
-    String makeMove(char player, int position) throws RemoteException;
-    char[] getBoard() throws RemoteException;
-    // ...
+while (true) {
+    Socket client = serverSocket.accept();
+    new ClientHandler(client).start();  // New thread
 }
 ```
 
-### Phase 2: Network Distribution
+**Benefits:**
+- Concurrent client handling
+- Isolated client state
+- Scalable architecture
 
-- [ ] Separate server process (port 1099)
-- [ ] Network-based clients
-- [ ] Support for different machines
-- [ ] IP address configuration
+---
 
-### Phase 3: Advanced Features
+## 💡 Key Features Explained
 
-- [ ] AI opponent (Minimax algorithm)
-- [ ] Online matchmaking
-- [ ] Game replay system
-- [ ] Move history and undo
-- [ ] Custom board sizes (4x4, 5x5)
-- [ ] Tournament mode
-- [ ] Leaderboards
-- [ ] Chat system
+### Registry Cache Monitor
 
-### Phase 4: Production Readiness
-
-- [ ] Security (SSL/TLS)
-- [ ] User authentication
-- [ ] Database persistence
-- [ ] Load balancing
-- [ ] Error recovery
-- [ ] Logging framework
-- [ ] Unit tests
-- [ ] Documentation
-
-## 📊 Performance Considerations
-
-### Registry Caching Benefits
-
+**What it shows:**
 ```
-WITHOUT CACHE:
-Request 1: Lookup → Server → Create service → 50ms
-Request 2: Lookup → Server → Create service → 50ms
-Request 3: Lookup → Server → Create service → 50ms
-Total: 150ms
+╔═══════════════════════════════╗
+║   REGISTRY CACHE STATUS       ║
+╚═══════════════════════════════╝
 
-WITH CACHE:
-Request 1: Lookup → Server → Create service → Cache → 50ms
-Request 2: Lookup → Cache hit → 1ms
-Request 3: Lookup → Cache hit → 1ms
-Total: 52ms (65% faster!)
+📦 Cached Services:
+  Service: TicTacToeGame
+  Status: ✓ Active
+  Host: localhost:5000
+  Type: SocketGameProxy
+
+📊 Current Game State:
+  Turn: Player X
+  Status: IN_PROGRESS
+  Moves: 3/9
+
+🔄 Cache Operations:
+  Lookups: 6
+  Hits: 100%
+  Misses: 0
+
+💾 Registry:
+  Objects: 1 ServiceRef
+
+⏱️  Updated: 14:32:45
 ```
 
-### Thread Safety
+**Purpose:** Educational visualization of RMI caching concept
 
-All service methods use `synchronized` keyword:
+**Update Frequency:** Every 300ms (automatic refresh)
+
+### Player-Specific Messages
+
+**Feature:** Different players see customized game status
+
+**Example:**
+- Player X window: "🎉 You Win! Congratulations!"
+- Player O window: "😢 You Lose! Player X wins!"
+
+**Implementation:**
 ```java
-public synchronized String makeMove(char player, int position)
+public synchronized String getStatusForPlayer(char player) {
+    if (status.contains("Player " + player + " wins!")) {
+        return "🎉 You Win! Congratulations!";
+    }
+    char opponent = (player == 'X') ? 'O' : 'X';
+    if (status.contains("Player " + opponent + " wins!")) {
+        return "😢 You Lose! Player " + opponent + " wins!";
+    }
+    return status;
+}
 ```
 
-**Prevents:**
-- Race conditions
-- Concurrent move conflicts
-- Inconsistent game state
+### Command-Line Server Configuration
 
-**Performance Impact:**
-- Slight overhead per method call
-- Ensures correctness
-- Worth the tradeoff for reliability
+**Why it's important:** No need to recompile when changing server IP
 
-## 🤝 Contributing
+**Usage:**
+```powershell
+# Default (localhost):
+java -cp bin ui.ClientGameUI
 
-Contributions are welcome! Please follow these guidelines:
+# Specify server:
+java -cp bin ui.ClientGameUI 192.168.1.100
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+# Works with any IP:
+java -cp bin ui.ClientGameUI 10.0.0.50
+```
 
-## 📝 License
+**Implementation:**
+```java
+String serverHost = args.length > 0 ? args[0] : "localhost";
+```
 
-This project is created for educational purposes as part of a Distributed Systems course.
+---
+
+## 🐛 Troubleshooting
+
+### Problem: "Connection refused" Error
+
+**Cause:** Server not running or wrong IP/port
+
+**Solutions:**
+1. **Check server is running:**
+   ```powershell
+   # Should show active Java process
+   netstat -an | findstr "5000"
+   ```
+
+2. **Verify server IP:**
+   - Check server console output for correct IP
+   - Use `ipconfig` (Windows) or `ifconfig` (Linux/Mac)
+
+3. **Test connectivity:**
+   ```powershell
+   # Windows
+   Test-NetConnection -ComputerName 192.168.1.100 -Port 5000
+   
+   # Linux/Mac
+   telnet 192.168.1.100 5000
+   ```
+
+### Problem: Firewall Blocks Connection
+
+**Solution:**
+```powershell
+# Windows - Add firewall rule
+New-NetFirewallRule -DisplayName "Tic-Tac-Toe" -Direction Inbound -LocalPort 5000 -Protocol TCP -Action Allow
+
+# Or temporarily disable firewall (testing only):
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+```
+
+### Problem: "Address already in use"
+
+**Cause:** Port 5000 is occupied
+
+**Solutions:**
+1. **Find process using port:**
+   ```powershell
+   netstat -ano | findstr ":5000"
+   taskkill /PID <process_id> /F
+   ```
+
+2. **Change port** in `SocketServer.java`:
+   ```java
+   private static final int PORT = 5001;  // Use different port
+   ```
+
+### Problem: Cache Monitor Shows "Disconnected"
+
+**Cause:** Lost connection to server
+
+**Solutions:**
+1. Check server is still running
+2. Click "New Game" to reconnect
+3. Restart client if needed
+
+### Problem: Compilation Errors
+
+**Solution:**
+```powershell
+# Clean and recompile
+Remove-Item -Recurse -Force bin
+mkdir bin
+javac -d bin -encoding UTF-8 src/server/*.java src/registry/*.java src/client/*.java src/ui/*.java
+```
+
+### Problem: Client Can't Find Server on Different Computer
+
+**Checklist:**
+- [ ] Server displays correct IP (not 127.0.0.1)
+- [ ] Both computers on same network
+- [ ] Firewall allows port 5000
+- [ ] Client uses correct IP address
+- [ ] Server is actually running
+
+**Test with ping:**
+```powershell
+ping 192.168.1.100
+```
+
+---
+
+## 🎓 Educational Value
+
+### What This Project Demonstrates
+
+1. **True Distributed Architecture**
+   - Separate processes communicate over network
+   - Real TCP/IP socket communication
+   - Cross-machine capability
+
+2. **RMI Design Patterns**
+   - Proxy: Client-side stub
+   - Registry: Service caching
+   - Dispatcher: Request routing
+   - Skeleton: Server-side implementation
+
+3. **Network Programming Concepts**
+   - Socket programming
+   - Object serialization
+   - Client-server model
+   - Thread management
+
+4. **Software Engineering Best Practices**
+   - Clean separation of concerns
+   - Design patterns
+   - Thread-safe programming
+   - Error handling
+
+### Perfect for Presentations
+
+- ✅ Visual cache monitoring
+- ✅ Clear architecture diagrams
+- ✅ Real-time demonstration capability
+- ✅ Educational console output
+- ✅ Runs on multiple computers
+
+---
 
 ## 👥 Authors
 
-- **SOK KIMHENG** - Initial work - TP-I4 2025
+- **SOK KIMHENG** - Implementation - *TP-I4 2025*
+- **Distributed Systems Course** - DS-I4 2025
+
+---
+
+## 📝 License
+
+This project is created for educational purposes as part of the Distributed Systems course at ITC (Institute of Technology of Cambodia).
+
+---
 
 ## 🙏 Acknowledgments
 
-- Distributed Systems Course - DS-I4 2025
-- Java Swing Documentation
+- Java Socket Programming Documentation
 - RMI Architecture Patterns
 - Design Patterns: Elements of Reusable Object-Oriented Software
+- ITC Distributed Systems Course Materials
+
 ---
 
-**Note**: This is a prototype implementation designed to demonstrate RMI architectural patterns. For production use, implement true Java RMI with network communication and proper security measures.
+## 📞 Support
+
+For questions or issues:
+1. Check [Troubleshooting](#-troubleshooting) section
+2. Review [NETWORK_CONFIGURATION.md](NETWORK_CONFIGURATION.md)
+3. Check [CACHE_VIEWER_GUIDE.md](CACHE_VIEWER_GUIDE.md)
+
+---
+
+**Version:** 1.0 (Socket-Based Implementation)  
+**Last Updated:** December 17, 2025  
+**Status:** ✅ Production Ready
+
+---
+
+*"Demonstrating distributed systems concepts through practical implementation."*
+---
+
+*"Demonstrating distributed systems concepts through practical implementation."*

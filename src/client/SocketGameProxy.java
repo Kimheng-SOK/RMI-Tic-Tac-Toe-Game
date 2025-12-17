@@ -124,4 +124,15 @@ public class SocketGameProxy {
             return '-';
         }
     }
+    
+    /**
+     * Gets player-specific status message
+     */
+    public Object getStatusForPlayer(char player) {
+        try {
+            return invokeRemote("getStatusForPlayer", player);
+        } catch (Exception e) {
+            return "ERROR";
+        }
+    }
 }

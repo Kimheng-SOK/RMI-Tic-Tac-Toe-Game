@@ -18,7 +18,7 @@ public class SocketServer {
     
     public static void main(String[] args) {
         System.out.println("╔════════════════════════════════════════╗");
-        System.out.println("║   Socket-Based RMI Server Starting    ║");
+        System.out.println("║   Socket-Based RMI Server Starting     ║");
         System.out.println("╚════════════════════════════════════════╝");
         
         try {

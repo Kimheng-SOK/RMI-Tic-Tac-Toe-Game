@@ -86,6 +86,35 @@ public class TicTacToeService {
     }
 
     /**
+     * Gets player-specific status message.
+     * @param player the player requesting status
+     * @return customized status message for this player
+     */
+    public synchronized String getStatusForPlayer(char player) {
+        if (status.equals("IN_PROGRESS")) {
+            return status;
+        }
+        
+        // Check if this player won
+        if (status.contains("Player " + player + " wins!")) {
+            return "🎉 You Win! Congratulations!";
+        }
+        
+        // Check if opponent won (this player lost)
+        char opponent = (player == 'X') ? 'O' : 'X';
+        if (status.contains("Player " + opponent + " wins!")) {
+            return "😢 You Lose! Player " + opponent + " wins!";
+        }
+        
+        // Draw
+        if (status.equals("Draw!")) {
+            return "🤝 Draw! Good game!";
+        }
+        
+        return status;
+    }
+
+    /**
      * Gets the current player.
      * @return current player character
      */
@@ -136,7 +165,6 @@ public class TicTacToeService {
 
         return false;
     }
-
     /**
      * Checks if the game is a draw.
      * @return true if board is full, false otherwise
